@@ -3,165 +3,264 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的元气主页 ✨</title>
-    <!-- 引入可爱的圆体字体 -->
+    <title>我的奇趣空间 🎮</title>
+    <!-- 引入圆润字体 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
-        /* --- 整体风格 --- */
+        /* --- CSS 变量，用于轻松换肤 --- */
+        :root {
+            /* 默认是甜粉主题 */
+            --bg-gradient: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);
+            --main-bg-color: rgba(255, 255, 255, 0.6);
+            --accent-color: #ff79c6;
+            --text-color: #333;
+            --button-bg: #ff79c6;
+            --button-text: #fff;
+            --shadow-color: rgba(255, 121, 198, 0.3);
+        }
+
+        body.theme-mint {
+            --bg-gradient: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%);
+            --main-bg-color: rgba(255, 255, 255, 0.7);
+            --accent-color: #66cdaa;
+            --button-bg: #66cdaa;
+            --shadow-color: rgba(102, 205, 170, 0.4);
+        }
+
+        body.theme-sunset {
+            --bg-gradient: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            --main-bg-color: rgba(255, 255, 255, 0.65);
+            --accent-color: #ff8c61;
+            --button-bg: #ff8c61;
+            --shadow-color: rgba(252, 140, 97, 0.4);
+        }
+
+        /* --- 整体布局 --- */
         body {
-            font-family: 'M PLUS Rounded 1c', sans-serif; /* 使用圆润字体 */
+            font-family: 'M PLUS Rounded 1c', sans-serif;
             margin: 0;
-            padding: 40px 15px;
-            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); /* 粉蓝渐变背景 */
-            background-attachment: fixed; /* 背景固定，滚动时不移动 */
-            color: #333;
+            height: 100vh; /* 占满整个屏幕高度 */
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            display: flex; /* 使用 Flexbox 进行左右分栏 */
+            transition: background 0.5s ease;
+            animation: fadeIn 1s ease-in-out;
         }
 
-        /* --- 玻璃质感卡片 --- */
-        .container {
-            max-width: 800px;
-            margin: auto;
-            background: rgba(255, 255, 255, 0.8); /* 半透明背景 */
-            backdrop-filter: blur(10px); /* 模糊效果，实现玻璃质感 */
-            -webkit-backdrop-filter: blur(10px);
-            border-radius: 25px; /* 更大的圆角 */
-            padding: 30px;
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15); /* 柔和的阴影 */
-            border: 1px solid rgba(255, 255, 255, 0.18);
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
-        /* --- 头部和头像 --- */
-        .header {
+        /* --- 左右分栏容器 --- */
+        .main-container {
+            display: flex;
+            width: 100%;
+            height: 100%;
+        }
+
+        .profile-section, .interactive-section {
+            flex: 1; /* 两栏平分宽度 */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
             text-align: center;
-            padding-bottom: 20px;
+        }
+
+        /* --- 左栏：个人信息 --- */
+        .profile-card {
+            background: var(--main-bg-color);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 0 8px 32px 0 var(--shadow-color);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            transition: all 0.5s ease;
         }
 
         .profile-pic {
-            width: 150px;
-            height: 150px;
+            width: 160px;
+            height: 160px;
             border-radius: 50%;
             object-fit: cover;
-            border: 5px solid #fff;
-            box-shadow: 0 0 20px rgba(255, 105, 180, 0.5); /* 粉色光晕 */
-            animation: pulse 2.5s infinite ease-in-out; /* 应用呼吸动画 */
+            border: 6px solid #fff;
+            margin-bottom: 20px;
+            box-shadow: 0 0 0 8px var(--accent-color);
+            transition: transform 0.3s ease;
         }
-        
-        /* 头像呼吸动画 */
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.05);
-                box-shadow: 0 0 30px rgba(255, 105, 180, 0.7);
-            }
-            100% {
-                transform: scale(1);
-            }
+
+        .profile-pic:hover {
+            transform: scale(1.1) rotate(5deg);
         }
 
         h1 {
+            font-size: 3em;
+            color: var(--accent-color);
             margin: 15px 0 10px;
-            font-size: 2.8em;
-            color: #ff6f91; /* 活泼的粉色 */
             font-weight: 700;
+            transition: color 0.5s ease;
         }
 
-        .header p {
-            font-size: 1.1em;
-            color: #555;
+        .description {
+            font-size: 1.2em;
+            color: var(--text-color);
+            max-width: 350px;
+            transition: color 0.5s ease;
         }
 
-        /* --- 内容区域标题 --- */
-        h2 {
-            display: inline-block; /* 让背景色包裹文字 */
-            background-color: #ff8fab; /* 可爱的粉色 */
+        /* --- 右栏：交互区域 --- */
+        .interactive-section h2 {
+            font-size: 2em;
             color: #fff;
-            padding: 10px 25px;
-            border-radius: 20px; /* 胶囊形状 */
-            margin-top: 40px;
-            margin-bottom: 25px;
-            font-size: 1.6em;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            background: var(--accent-color);
+            padding: 12px 30px;
+            border-radius: 50px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px var(--shadow-color);
+            transition: all 0.5s ease;
         }
 
-        /* --- 相册和视频网格 --- */
-        .gallery, .videos {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px; /* 增加间距 */
+        .button-group {
+            margin-bottom: 40px;
         }
 
-        .gallery img, .videos video {
-            width: 100%;
-            height: auto;
-            border-radius: 15px; /* 更圆的角 */
-            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
-            transition: all 0.3s ease; /* 平滑的过渡效果 */
+        .theme-btn, #surprise-btn {
+            font-family: inherit;
+            font-size: 1em;
+            font-weight: bold;
+            border: none;
+            border-radius: 20px;
+            padding: 12px 25px;
+            margin: 5px;
             cursor: pointer;
+            background: var(--button-bg);
+            color: var(--button-text);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .theme-btn:hover, #surprise-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+        }
+        
+        #message-box {
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 20px;
+            padding: 25px;
+            min-height: 80px;
+            width: 80%;
+            max-width: 400px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2em;
+            color: var(--text-color);
+            box-shadow: 0 4px 15px var(--shadow-color);
+            font-weight: bold;
+            transition: all 0.5s ease;
         }
 
-        .gallery img:hover, .videos video:hover {
-            transform: translateY(-8px) scale(1.03); /* 向上浮动并放大 */
-            box-shadow: 0 12px 24px rgba(0,0,0,0.15);
-        }
-
-        /* --- 底部 --- */
-        .footer {
-            text-align: center;
-            margin-top: 50px;
-            padding-top: 20px;
-            font-size: 0.9em;
-            color: #888;
+        /* 移动端适配 */
+        @media (max-width: 800px) {
+            body {
+                height: auto;
+            }
+            .main-container {
+                flex-direction: column; /* 竖向排列 */
+            }
         }
     </style>
 </head>
-<body>
+<body class="theme-pink"> <!-- 默认主题 -->
 
-    <div class="container">
-        <div class="header">
-            <!-- 1. 更换你的头像 -->
-            <!-- 将 "profile.jpg" 替换成你上传的头像文件名 -->
-            <img src="profile.jpg" alt="我的头像" class="profile-pic">
-            
-            <!-- 2. 修改你的名字 -->
-            <h1>你的名字</h1>
-            
-            <!-- 3. 修改你的简介 -->
-            <p>🍬 欢迎来到我的元气小站！🍭</p>
-        </div>
+    <div class="main-container">
+        
+        <!-- ======================= -->
+        <!--      左栏：个人信息      -->
+        <!-- ======================= -->
+        <section class="profile-section">
+            <div class="profile-card">
+                <!-- 1. 更换你的头像 -->
+                <img src="profile.jpg" alt="我的头像" class="profile-pic">
+                
+                <!-- 2. 修改你的名字 -->
+                <h1>你的名字</h1>
+                
+                <!-- 3. 修改你的简介 -->
+                <p class="description">✨ 这里是我的奇趣空间，一个充满了奇思妙想和无限可能的地方！</p>
 
-        <div class="content">
-            <!-- 使用 Emoji 来装饰标题，更可爱 -->
-            <h2>📸 我的相册</h2>
-            <div class="gallery">
-                <!-- 4. 添加或修改图片 -->
-                <!-- 将下面的 "image1.jpg", "image2.jpg" 等替换成你上传的图片文件名 -->
-                <img src="image1.jpg" alt="图片描述1">
-                <img src="image2.jpg" alt="图片描述2">
-                <img src="image3.jpg" alt="图片描述3">
-                <!-- 如果想添加更多图片，复制上面一行 <img ...> 并修改文件名即可 -->
+                <!-- 你可以在这里加回之前的相册和视频 -->
+            </div>
+        </section>
+
+        <!-- ======================= -->
+        <!--      右栏：交互区域      -->
+        <!-- ======================= -->
+        <section class="interactive-section">
+            <h2>来玩呀～ ૮₍ ´• ˕ •` ₎ა</h2>
+            
+            <div class="button-group">
+                <p style="color: #fff; font-weight: bold;">换个心情?</p>
+                <button class="theme-btn" data-theme="pink">甜粉</button>
+                <button class="theme-btn" data-theme="mint">薄荷</button>
+                <button class="theme-btn" data-theme="sunset">暖阳</button>
             </div>
 
-            <h2>🎬 我的视频</h2>
-            <div class="videos">
-                <!-- 5. 添加或修改视频 -->
-                <!-- 将 "video1.mp4" 替换成你上传的视频文件名 -->
-                <video controls poster="video_poster.jpg"> <!-- poster 属性可以设置视频封面 -->
-                    <source src="video1.mp4" type="video/mp4">
-                    您的浏览器不支持 Video 标签。
-                </video>
-                <!-- 如果想添加更多视频，复制上面整个 <video>...</video> 代码块并修改文件名即可 -->
+            <button id="surprise-btn">点我！有惊喜！</button>
+            
+            <div id="message-box">
+                <p>今天会发生什么好事呢？</p>
             </div>
-        </div>
+        </section>
 
-        <div class="footer">
-            <p>© 2024 你的名字 · All Rights Reserved</p>
-        </div>
     </div>
+
+    <!-- ======================= -->
+    <!--     JavaScript 魔法      -->
+    <!-- ======================= -->
+    <script>
+        // --- 惊喜制造机 ---
+        const surpriseBtn = document.getElementById('surprise-btn');
+        const messageBox = document.getElementById('message-box');
+
+        // ✨ 在这里修改或增加你的俏皮文案！
+        const messages = [
+            "你超棒的！要继续闪闪发光哦！✨",
+            "摸摸头，今天也要元气满满呀！",
+            "一个小知识：水豚可以和几乎所有动物做朋友。",
+            "你笑起来真好看，像春天的花一样。",
+            "快看！你的可爱值又增加了！",
+            "别忘了喝水，要做个水灵灵的宝贝。",
+            "悄悄告诉你，你正在被好运包围哦！",
+            "“砰！” ← 这是我心动的声音。",
+            "今日宜：拥抱自己，热爱生活。"
+        ];
+
+        surpriseBtn.addEventListener('click', () => {
+            const randomIndex = Math.floor(Math.random() * messages.length);
+            messageBox.innerHTML = `<p>${messages[randomIndex]}</p>`;
+        });
+
+        // --- 主题更换器 ---
+        const themeButtons = document.querySelectorAll('.theme-btn');
+        const body = document.body;
+
+        themeButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const theme = button.getAttribute('data-theme');
+                // 移除所有可能的主题类，然后添加新的
+                body.className = ''; 
+                body.classList.add(`theme-${theme}`);
+            });
+        });
+    </script>
 
 </body>
 </html>
