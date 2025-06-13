@@ -3,68 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的个人主页</title>
+    <title>我的元气主页 ✨</title>
+    <!-- 引入可爱的圆体字体 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700&display=swap" rel="stylesheet">
+    
     <style>
+        /* --- 整体风格 --- */
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            line-height: 1.6;
+            font-family: 'M PLUS Rounded 1c', sans-serif; /* 使用圆润字体 */
             margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
+            padding: 40px 15px;
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); /* 粉蓝渐变背景 */
+            background-attachment: fixed; /* 背景固定，滚动时不移动 */
             color: #333;
         }
+
+        /* --- 玻璃质感卡片 --- */
         .container {
             max-width: 800px;
-            margin: 30px auto;
-            padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 0 15px rgba(0,0,0,0.1);
-            border-radius: 10px;
+            margin: auto;
+            background: rgba(255, 255, 255, 0.8); /* 半透明背景 */
+            backdrop-filter: blur(10px); /* 模糊效果，实现玻璃质感 */
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 25px; /* 更大的圆角 */
+            padding: 30px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15); /* 柔和的阴影 */
+            border: 1px solid rgba(255, 255, 255, 0.18);
         }
+
+        /* --- 头部和头像 --- */
         .header {
             text-align: center;
             padding-bottom: 20px;
-            border-bottom: 1px solid #eaeaea;
         }
+
         .profile-pic {
             width: 150px;
             height: 150px;
             border-radius: 50%;
             object-fit: cover;
-            margin-bottom: 15px;
+            border: 5px solid #fff;
+            box-shadow: 0 0 20px rgba(255, 105, 180, 0.5); /* 粉色光晕 */
+            animation: pulse 2.5s infinite ease-in-out; /* 应用呼吸动画 */
         }
+        
+        /* 头像呼吸动画 */
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 0 30px rgba(255, 105, 180, 0.7);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
         h1 {
-            margin: 0;
-            font-size: 2.5em;
+            margin: 15px 0 10px;
+            font-size: 2.8em;
+            color: #ff6f91; /* 活泼的粉色 */
+            font-weight: 700;
         }
+
+        .header p {
+            font-size: 1.1em;
+            color: #555;
+        }
+
+        /* --- 内容区域标题 --- */
         h2 {
-            border-bottom: 2px solid #4CAF50;
-            padding-bottom: 10px;
+            display: inline-block; /* 让背景色包裹文字 */
+            background-color: #ff8fab; /* 可爱的粉色 */
+            color: #fff;
+            padding: 10px 25px;
+            border-radius: 20px; /* 胶囊形状 */
             margin-top: 40px;
+            margin-bottom: 25px;
+            font-size: 1.6em;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
+
+        /* --- 相册和视频网格 --- */
         .gallery, .videos {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
+            gap: 20px; /* 增加间距 */
         }
+
         .gallery img, .videos video {
             width: 100%;
             height: auto;
-            border-radius: 5px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            transition: transform 0.2s;
+            border-radius: 15px; /* 更圆的角 */
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+            transition: all 0.3s ease; /* 平滑的过渡效果 */
+            cursor: pointer;
         }
+
         .gallery img:hover, .videos video:hover {
-            transform: scale(1.05);
+            transform: translateY(-8px) scale(1.03); /* 向上浮动并放大 */
+            box-shadow: 0 12px 24px rgba(0,0,0,0.15);
         }
+
+        /* --- 底部 --- */
         .footer {
             text-align: center;
-            margin-top: 40px;
+            margin-top: 50px;
             padding-top: 20px;
-            border-top: 1px solid #eaeaea;
             font-size: 0.9em;
-            color: #777;
+            color: #888;
         }
     </style>
 </head>
@@ -80,11 +131,12 @@
             <h1>你的名字</h1>
             
             <!-- 3. 修改你的简介 -->
-            <p>欢迎来到我的个人主页！这里是关于我的一些介绍、作品和生活点滴。</p>
+            <p>🍬 欢迎来到我的元气小站！🍭</p>
         </div>
 
         <div class="content">
-            <h2>我的相册</h2>
+            <!-- 使用 Emoji 来装饰标题，更可爱 -->
+            <h2>📸 我的相册</h2>
             <div class="gallery">
                 <!-- 4. 添加或修改图片 -->
                 <!-- 将下面的 "image1.jpg", "image2.jpg" 等替换成你上传的图片文件名 -->
@@ -94,11 +146,11 @@
                 <!-- 如果想添加更多图片，复制上面一行 <img ...> 并修改文件名即可 -->
             </div>
 
-            <h2>我的视频</h2>
+            <h2>🎬 我的视频</h2>
             <div class="videos">
                 <!-- 5. 添加或修改视频 -->
                 <!-- 将 "video1.mp4" 替换成你上传的视频文件名 -->
-                <video controls>
+                <video controls poster="video_poster.jpg"> <!-- poster 属性可以设置视频封面 -->
                     <source src="video1.mp4" type="video/mp4">
                     您的浏览器不支持 Video 标签。
                 </video>
@@ -107,8 +159,7 @@
         </div>
 
         <div class="footer">
-            <p>© 2024 你的名字. 版权所有.</p>
-        }
+            <p>© 2024 你的名字 · All Rights Reserved</p>
         </div>
     </div>
 
