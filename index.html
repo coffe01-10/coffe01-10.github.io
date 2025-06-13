@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的个人主页</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            border-radius: 10px;
+        }
+        .header {
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eaeaea;
+        }
+        .profile-pic {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 15px;
+        }
+        h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+        h2 {
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 10px;
+            margin-top: 40px;
+        }
+        .gallery, .videos {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .gallery img, .videos video {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        .gallery img:hover, .videos video:hover {
+            transform: scale(1.05);
+        }
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #eaeaea;
+            font-size: 0.9em;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <!-- 1. 更换你的头像 -->
+            <!-- 将 "profile.jpg" 替换成你上传的头像文件名 -->
+            <img src="profile.jpg" alt="我的头像" class="profile-pic">
+            
+            <!-- 2. 修改你的名字 -->
+            <h1>你的名字</h1>
+            
+            <!-- 3. 修改你的简介 -->
+            <p>欢迎来到我的个人主页！这里是关于我的一些介绍、作品和生活点滴。</p>
+        </div>
+
+        <div class="content">
+            <h2>我的相册</h2>
+            <div class="gallery">
+                <!-- 4. 添加或修改图片 -->
+                <!-- 将下面的 "image1.jpg", "image2.jpg" 等替换成你上传的图片文件名 -->
+                <img src="image1.jpg" alt="图片描述1">
+                <img src="image2.jpg" alt="图片描述2">
+                <img src="image3.jpg" alt="图片描述3">
+                <!-- 如果想添加更多图片，复制上面一行 <img ...> 并修改文件名即可 -->
+            </div>
+
+            <h2>我的视频</h2>
+            <div class="videos">
+                <!-- 5. 添加或修改视频 -->
+                <!-- 将 "video1.mp4" 替换成你上传的视频文件名 -->
+                <video controls>
+                    <source src="video1.mp4" type="video/mp4">
+                    您的浏览器不支持 Video 标签。
+                </video>
+                <!-- 如果想添加更多视频，复制上面整个 <video>...</video> 代码块并修改文件名即可 -->
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>© 2024 你的名字. 版权所有.</p>
+        }
+        </div>
+    </div>
+
+</body>
+</html>
