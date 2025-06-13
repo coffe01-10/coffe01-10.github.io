@@ -20,6 +20,7 @@
             --button-bg: #ff79c6;
             --button-text: #fff;
             --shadow-color: rgba(255, 121, 198, 0.3);
+            --heart-color: #ff79c6;
         }
         
         body.theme-mint {
@@ -28,6 +29,7 @@
             --accent-color: #66cdaa;
             --button-bg: #66cdaa;
             --shadow-color: rgba(102, 205, 170, 0.4);
+            --heart-color: #66cdaa;
         }
         
         body.theme-sunset {
@@ -36,6 +38,7 @@
             --accent-color: #ff8c61;
             --button-bg: #ff8c61;
             --shadow-color: rgba(252, 140, 97, 0.4);
+            --heart-color: #ff8c61;
         }
 
         /* --- 整体布局 --- */
@@ -49,6 +52,7 @@
             transition: background 0.5s ease;
             animation: fadeIn 1s ease-in-out;
             overflow: hidden; /* 防止滚动条出现 */
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="white" style="transform: rotate(45deg);"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>'), auto;
         }
 
         @keyframes fadeIn {
@@ -94,7 +98,7 @@
             margin-bottom: 20px;
             box-shadow: 0 0 0 8px var(--accent-color);
             transition: transform 0.3s ease;
-            cursor: pointer; /* 提示用户可以点击 */
+            cursor: pointer;
         }
 
         .profile-pic:hover {
@@ -113,7 +117,12 @@
             font-size: 1.2em;
             color: var(--text-color);
             max-width: 350px;
-            transition: color 0.5s ease;
+            min-height: 50px; /* 防止切换时高度变化 */
+            transition: color 0.5s ease, opacity 0.5s ease;
+        }
+
+        .description.fade-out {
+            opacity: 0;
         }
 
         /* --- 右栏：交互区域 --- */
@@ -126,13 +135,19 @@
             margin-bottom: 30px;
             box-shadow: 0 4px 15px var(--shadow-color);
             transition: all 0.5s ease;
+            animation: glow 2s infinite alternate; /* 新增发光动画 */
+        }
+        
+        @keyframes glow {
+            from { box-shadow: 0 4px 15px var(--shadow-color); }
+            to { box-shadow: 0 6px 25px var(--shadow-color), 0 0 10px var(--accent-color); }
         }
 
         .button-group {
-            margin-bottom: 20px; /* 调整间距 */
+            margin-bottom: 20px;
         }
 
-        .theme-btn, #surprise-btn {
+        .theme-btn, #surprise-btn, #guess-btn, #play-again-btn {
             font-family: inherit;
             font-size: 1em;
             font-weight: bold;
@@ -147,9 +162,14 @@
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
         
-        .theme-btn:hover, #surprise-btn:hover {
+        .theme-btn:hover, #surprise-btn:hover, #guess-btn:hover, #play-again-btn:hover {
             transform: translateY(-5px);
             box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+        }
+
+        .theme-btn:active, #surprise-btn:active, #guess-btn:active, #play-again-btn:active {
+            transform: translateY(-2px) scale(0.98); /* 新增点击反馈 */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
         }
         
         #message-box {
@@ -169,26 +189,32 @@
             transition: all 0.5s ease;
             margin-top: 20px;
         }
-        
+        #message-box p {
+            transition: opacity 0.3s ease-in-out;
+        }
+        #message-box p.fade-out {
+            opacity: 0;
+        }
+
         /* 
         ================================
-        ✨ 新增好玩元素的 CSS 样式 ✨
+        ✨ 好玩元素的 CSS 样式 ✨
         ================================
         */
 
-        /* --- 1. 魔法光标样式 --- */
+        /* 1. 魔法光标 */
         .sparkle {
             position: fixed;
             width: 10px;
             height: 10px;
-            background-color: var(--accent-color);
+            background-color: var(--accent-color); /* 颜色会随主题变化 */
             border-radius: 50%;
             pointer-events: none;
             z-index: 9999;
             transition: transform 0.2s ease-out, opacity 0.2s ease-out;
         }
 
-        /* --- 2. "宠物"头像点击动画 --- */
+        /* 2. "宠物"头像点击动画 */
         @keyframes wobble {
             0% { transform: rotate(0deg); }
             25% { transform: rotate(5deg) scale(1.1); }
@@ -196,12 +222,9 @@
             75% { transform: rotate(5deg) scale(1.1); }
             100% { transform: rotate(0deg); }
         }
+        .profile-pic.clicked { animation: wobble 0.5s ease-in-out; }
 
-        .profile-pic.clicked {
-            animation: wobble 0.5s ease-in-out;
-        }
-
-        /* --- 3. 小游戏样式 --- */
+        /* 3. 小游戏样式 */
         #game-container {
             background: rgba(255, 255, 255, 0.8);
             border-radius: 20px;
@@ -213,10 +236,7 @@
             text-align: center;
             color: var(--text-color);
         }
-        #game-container h3 {
-            margin-top: 0;
-            color: var(--accent-color);
-        }
+        #game-container h3 { margin-top: 0; color: var(--accent-color); }
         #guess-input {
             width: 60%;
             padding: 8px;
@@ -224,62 +244,61 @@
             border-radius: 10px;
             margin-right: 5px;
         }
-        #guess-btn {
-            font-family: inherit;
-            font-size: 0.9em;
-            font-weight: bold;
-            border: none;
-            border-radius: 10px;
-            padding: 10px 15px;
-            cursor: pointer;
-            background: var(--button-bg);
-            color: var(--button-text);
-            transition: transform 0.2s ease;
+        #game-feedback, #attempts-counter { font-weight: bold; margin-top: 10px; min-height: 20px; }
+        #attempts-counter { color: #888; font-size: 0.9em; }
+        #play-again-btn { background: #82E0AA; margin-top: 10px; }
+
+        /* 4. 点击浮动爱心 */
+        .floating-heart {
+            position: fixed;
+            font-size: 24px;
+            color: var(--heart-color);
+            pointer-events: none;
+            animation: floatUp 2s ease-out forwards;
+            z-index: 9998;
         }
-        #guess-btn:hover {
-            transform: scale(1.1);
+        @keyframes floatUp {
+            to {
+                transform: translateY(-200px) scale(1.5);
+                opacity: 0;
+            }
         }
-        #game-feedback {
-            font-weight: bold;
-            margin-top: 15px;
-            min-height: 20px;
+        
+        /* 5. 静音按钮 */
+        #mute-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.5);
+            color: var(--accent-color);
+            border: 2px solid var(--accent-color);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 1.5em;
+            padding: 0;
+            z-index: 10000;
         }
 
         /* 移动端适配 */
         @media (max-width: 800px) {
-            body {
-                height: auto;
-                overflow: auto; /* 在移动端允许滚动 */
-            }
-            .main-container {
-                flex-direction: column;
-            }
+            body { height: auto; overflow: auto; }
+            .main-container { flex-direction: column; }
+            #mute-btn { bottom: 10px; right: 10px; }
         }
     </style>
 </head>
 <body class="theme-pink">
 
     <div class="main-container">
-        
-        <!-- ======================= -->
-        <!--      左栏：个人信息      -->
-        <!-- ======================= -->
         <section class="profile-section">
             <div class="profile-card">
-                <!-- 1. 更换你的头像 -->
                 <img src="1747588503128.jpg" alt="我的头像" class="profile-pic">
-                
-                <!-- 2. 修改你的名字 -->
                 <h1>melody</h1>
-                
-                <!-- 3. 修改你的简介 -->
                 <p class="description">✨ 这里是我的奇趣空间，一个充满了奇思妙想和无限可能的地方！</p>
             </div>
         </section>
 
-        <!-- ======================= -->
-        <!--      右栏：交互区域      -->
-        <!-- ======================= -->
         <section class="interactive-section">
             <h2>来玩呀～ ૮₍ ´• ˕ •` ₎ა</h2>
             
@@ -292,126 +311,254 @@
 
             <button id="surprise-btn">点我！有惊喜！</button>
 
-            <!-- ======================= -->
-            <!--   “猜猜数字”小游戏代码   -->
-            <!-- ======================= -->
             <div id="game-container">
                 <h3>小游戏：猜猜数字 (1-100)</h3>
                 <input type="number" id="guess-input" placeholder="输入你的猜测">
                 <button id="guess-btn">猜！</button>
                 <p id="game-feedback">祝你好运！</p>
+                <p id="attempts-counter"></p>
+                <button id="play-again-btn" style="display: none;">再玩一次</button>
             </div>
             
             <div id="message-box">
                 <p>今天会发生什么好事呢？</p>
             </div>
         </section>
-
     </div>
+    
+    <button id="mute-btn">🔊</button>
 
-    <!-- ======================= -->
-    <!--     JavaScript 魔法      -->
-    <!-- ======================= -->
     <script>
-        // --- 惊喜制造机 ---
-        const surpriseBtn = document.getElementById('surprise-btn');
-        const messageBox = document.getElementById('message-box');
+    // 使用 DOMContentLoaded 确保页面加载完毕后再执行脚本
+    document.addEventListener('DOMContentLoaded', () => {
 
-        const messages = [
-            "你超棒的！要继续闪闪发光哦！✨", "摸摸头，今天也要元气满满呀！",
-            "一个小知识：水豚可以和几乎所有动物做朋友。", "你笑起来真好看，像春天的花一样。",
-            "快看！你的可爱值又增加了！", "别忘了喝水，要做个水灵灵的宝贝。",
-            "悄悄告诉你，你正在被好运包围哦！", "“砰！” ← 这是我心动的声音。",
-            "今日宜：拥抱自己，热爱生活。"
-        ];
+        // --- 全局变量和状态 ---
+        let isMuted = false;
 
-        surpriseBtn.addEventListener('click', () => {
-            const randomIndex = Math.floor(Math.random() * messages.length);
-            messageBox.innerHTML = `<p>${messages[randomIndex]}</p>`;
-        });
+        // --- 音效池 ---
+        const sounds = {
+            click: new Audio('data:audio/mp3;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAAB8AAIAACBUU0UuBuAkBwAuAG5EZXRvlgAAAAAAAABDTEFzc25k'), // A simple click sound
+            success: new Audio('data:audio/mp3;base64,UklGRlJgT19XQVZFZm10IBAAAAABAAEAQB8AAAB8AAIAACARKwAAVEFS/gEBAgEBAgEEBAUEBgYIBwcICQkKCwsMDQ4ODxEREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc4OTo7PD0+P0BBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWltcXV5fYGFiY2RlZmdoaWprbG1ub3Bxc3R1dnd4eXp7fH1+f4CBgoOEhYaHiImKi4yNjo+QkZKTlJWWl5iZmpucnZ6foKGio6SlpqeoqaqrrK2ur7CxsrO0tba3uLm6u7y9vr/AwcLDxMXGx8jJysvMzc7P0NHS09TV1tfY2drb3N3e3+Dh4uPk5ebn6Onq6+zt7u/w8fLz9PX29/j5+vv8/f7/AAAA'), // A success chime
+            pop: new Audio('data:audio/mp3;base64,UklGRigAAABXQVZFZm10IBAAAAABAAJABAAAAEAASAAAAABACAAAAAAAAAAAABkYXRhAgAAAAEA') // A soft pop
+        };
 
-        // --- 主题更换器 ---
-        const themeButtons = document.querySelectorAll('.theme-btn');
-        const body = document.body;
+        function playSound(soundName) {
+            if (!isMuted && sounds[soundName]) {
+                sounds[soundName].currentTime = 0;
+                sounds[soundName].play().catch(e => console.error("Audio play failed:", e));
+            }
+        }
+        
+        // --- 1. 初始化所有功能 ---
+        function init() {
+            initThemeSwitcher();
+            initSurpriseButton();
+            initProfilePicAnimation();
+            initSparkleCursor();
+            initNumberGuessGame();
+            initFloatingHearts();
+            initDynamicDescription();
+            initMuteButton();
+        }
 
-        themeButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const theme = button.getAttribute('data-theme');
-                body.className = ''; 
-                body.classList.add(`theme-${theme}`);
+        // --- 2. 主题更换器 ---
+        function initThemeSwitcher() {
+            const themeButtons = document.querySelectorAll('.theme-btn');
+            themeButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    playSound('click');
+                    const theme = button.getAttribute('data-theme');
+                    document.body.className = `theme-${theme}`;
+                });
             });
-        });
+        }
 
-        /* 
-        ================================
-        ✨ 新增好玩元素的 JS 逻辑 ✨
-        ================================
-        */
+        // --- 3. 惊喜制造机 ---
+        function initSurpriseButton() {
+            const surpriseBtn = document.getElementById('surprise-btn');
+            const messageBoxP = document.querySelector('#message-box p');
+            const messages = [
+                "你超棒的！要继续闪闪发光哦！✨", "摸摸头，今天也要元气满满呀！",
+                "一个小知识：水豚可以和几乎所有动物做朋友。", "你笑起来真好看，像春天的花一样。",
+                "快看！你的可爱值又增加了！", "别忘了喝水，要做个水灵灵的宝贝。",
+                "悄悄告诉你，你正在被好运包围哦！", "“砰！” ← 这是我心动的声音。",
+                "今日宜：拥抱自己，热爱生活。"
+            ];
 
-        // --- 1. 仙女棒魔法光标 ---
-        document.addEventListener('mousemove', function(e) {
-            let sparkle = document.createElement('div');
-            sparkle.classList.add('sparkle');
-            document.body.appendChild(sparkle);
+            surpriseBtn.addEventListener('click', () => {
+                playSound('click');
+                const randomIndex = Math.floor(Math.random() * messages.length);
+                
+                messageBoxP.classList.add('fade-out');
+                setTimeout(() => {
+                    messageBoxP.textContent = messages[randomIndex];
+                    messageBoxP.classList.remove('fade-out');
+                }, 300);
+            });
+        }
 
-            sparkle.style.left = e.clientX + 'px';
-            sparkle.style.top = e.clientY + 'px';
-            
-            let size = Math.random() * 8 + 2;
-            sparkle.style.width = size + 'px';
-            sparkle.style.height = size + 'px';
+        // --- 4. "宠物"头像点击交互 ---
+        function initProfilePicAnimation() {
+            const profilePic = document.querySelector('.profile-pic');
+            profilePic.addEventListener('click', () => {
+                playSound('pop');
+                profilePic.classList.add('clicked');
+                setTimeout(() => profilePic.classList.remove('clicked'), 500);
+            });
+        }
 
-            setTimeout(() => {
-                sparkle.style.transform = 'scale(0.5)';
-                sparkle.style.opacity = '0';
-            }, 100);
+        // --- 5. 仙女棒魔法光标 ---
+        function initSparkleCursor() {
+            document.addEventListener('mousemove', function(e) {
+                let sparkle = document.createElement('div');
+                sparkle.classList.add('sparkle');
+                document.body.appendChild(sparkle);
 
-            setTimeout(() => {
-                sparkle.remove();
-            }, 300);
-        });
+                sparkle.style.left = e.clientX + 'px';
+                sparkle.style.top = e.clientY + 'px';
+                
+                // 星星颜色跟随主题
+                const accentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-color');
+                sparkle.style.backgroundColor = accentColor;
+                
+                let size = Math.random() * 8 + 2;
+                sparkle.style.width = size + 'px';
+                sparkle.style.height = size + 'px';
 
-        // --- 2. "宠物"头像点击交互 ---
-        const profilePic = document.querySelector('.profile-pic');
-        profilePic.addEventListener('click', () => {
-            profilePic.classList.add('clicked');
-            setTimeout(() => {
-                profilePic.classList.remove('clicked');
-            }, 500);
-        });
+                setTimeout(() => {
+                    sparkle.style.transform = 'scale(0.5)';
+                    sparkle.style.opacity = '0';
+                }, 100);
 
-        // --- 3. “猜猜数字”小游戏逻辑 ---
-        const guessInput = document.getElementById('guess-input');
-        const guessBtn = document.getElementById('guess-btn');
-        const gameFeedback = document.getElementById('game-feedback');
+                setTimeout(() => sparkle.remove(), 300);
+            });
+        }
+        
+        // --- 6. “猜猜数字”小游戏 ---
+        function initNumberGuessGame() {
+            const guessInput = document.getElementById('guess-input');
+            const guessBtn = document.getElementById('guess-btn');
+            const gameFeedback = document.getElementById('game-feedback');
+            const attemptsCounter = document.getElementById('attempts-counter');
+            const playAgainBtn = document.getElementById('play-again-btn');
 
-        let secretNumber = Math.floor(Math.random() * 100) + 1;
-        let attempts = 0;
+            let secretNumber, attempts;
 
-        guessBtn.addEventListener('click', () => {
-            const userGuess = parseInt(guessInput.value);
-            
-            if (isNaN(userGuess) || userGuess < 1 || userGuess > 100) {
-                gameFeedback.textContent = '请输入1到100之间的有效数字！';
-                return;
+            function resetGame() {
+                secretNumber = Math.floor(Math.random() * 100) + 1;
+                attempts = 0;
+                gameFeedback.textContent = '游戏开始，祝你好运！';
+                attemptsCounter.textContent = '';
+                guessInput.disabled = false;
+                guessBtn.disabled = false;
+                playAgainBtn.style.display = 'none';
+                guessInput.value = '';
+                guessInput.focus();
             }
-            
-            attempts++;
-            
-            if (userGuess < secretNumber) {
-                gameFeedback.textContent = `太小了！再试试看。 (尝试次数: ${attempts})`;
-            } else if (userGuess > 1000) {
-                gameFeedback.textContent = `太大啦！再试试看。 (尝试次数: ${attempts})`;
-            } else {
-                gameFeedback.textContent = `🎉 恭喜你！猜对了！答案就是 ${secretNumber}！你一共用了 ${attempts} 次。`;
-                guessBtn.disabled = true;
-                guessInput.disabled = true;
-            }
-            
-            guessInput.value = '';
-            guessInput.focus();
-        });
 
+            function handleGuess() {
+                playSound('click');
+                const userGuess = parseInt(guessInput.value);
+                
+                if (isNaN(userGuess) || userGuess < 1 || userGuess > 100) {
+                    gameFeedback.textContent = '请输入1到100之间的有效数字！';
+                    return;
+                }
+                
+                attempts++;
+                attemptsCounter.textContent = `尝试次数: ${attempts}`;
+                
+                if (userGuess < secretNumber) {
+                    gameFeedback.textContent = `太小了！再试试看。`;
+                } else if (userGuess > secretNumber) { // <<< BUG FIX: Was > 1000
+                    gameFeedback.textContent = `太大啦！再试试看。`;
+                } else {
+                    playSound('success');
+                    gameFeedback.textContent = `🎉 恭喜你！答案就是 ${secretNumber}！`;
+                    attemptsCounter.textContent = `你一共用了 ${attempts} 次，真棒！`;
+                    guessBtn.disabled = true;
+                    guessInput.disabled = true;
+                    playAgainBtn.style.display = 'inline-block';
+                }
+                
+                guessInput.value = '';
+                guessInput.focus();
+            }
+
+            guessBtn.addEventListener('click', handleGuess);
+            guessInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') handleGuess();
+            });
+            playAgainBtn.addEventListener('click', () => {
+                playSound('click');
+                resetGame();
+            });
+
+            resetGame(); // 首次加载时初始化游戏
+        }
+
+        // --- 7. 点击浮动爱心 ---
+        function initFloatingHearts() {
+            document.addEventListener('click', (e) => {
+                // 防止在按钮等可交互元素上触发
+                if (e.target.closest('button, a, input, .profile-pic')) return;
+
+                playSound('pop');
+                let heart = document.createElement('div');
+                heart.classList.add('floating-heart');
+                heart.innerHTML = '❤️'; // 或者 '✨', '⭐'
+                
+                heart.style.left = `${e.clientX - 12}px`;
+                heart.style.top = `${e.clientY - 12}px`;
+                // 随机旋转和动画时长，效果更自然
+                heart.style.transform = `rotate(${Math.random() * 90 - 45}deg)`;
+                heart.style.animationDuration = `${Math.random() * 1 + 1.5}s`;
+
+                document.body.appendChild(heart);
+                setTimeout(() => heart.remove(), 2500);
+            });
+        }
+        
+        // --- 8. 动态简介文本 ---
+        function initDynamicDescription() {
+            const descriptionEl = document.querySelector('.description');
+            const descriptions = [
+                "✨ 这里是我的奇趣空间，一个充满了奇思妙想和无限可能的地方！",
+                "🍓 喜欢一切可爱的事物，正在努力成为一个有趣的大人。",
+                "🎮 一个爱生活、爱探索的游戏玩家，欢迎来到我的世界！",
+                "🎨 坚信创造力能让世界变得更美好，每天都在收集灵感。"
+            ];
+            let currentIndex = 0;
+
+            setInterval(() => {
+                currentIndex = (currentIndex + 1) % descriptions.length;
+                descriptionEl.classList.add('fade-out');
+                
+                setTimeout(() => {
+                    descriptionEl.textContent = descriptions[currentIndex];
+                    descriptionEl.classList.remove('fade-out');
+                }, 500); // 必须匹配 CSS transition 时间
+            }, 7000); // 每7秒切换一次
+        }
+        
+        // --- 9. 静音切换器 ---
+        function initMuteButton() {
+            const muteBtn = document.getElementById('mute-btn');
+            muteBtn.addEventListener('click', () => {
+                isMuted = !isMuted;
+                muteBtn.textContent = isMuted ? '🔇' : '🔊';
+                // 简单的点击音效，即使在静音时也播放，提供操作反馈
+                if (sounds.click) {
+                    sounds.click.currentTime = 0;
+                    sounds.click.play().catch(e => {});
+                }
+            });
+        }
+
+        // --- 启动所有功能 ---
+        init();
+
+    });
     </script>
 
 </body>
