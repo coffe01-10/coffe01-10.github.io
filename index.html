@@ -22,6 +22,7 @@
             --shadow-color: rgba(255, 121, 198, 0.3);
         }
         
+        /* 你为新图片添加的样式，非常棒！ */
         .showcase-img {
             width: 100%; /* 图片宽度占满卡片 */
             max-width: 350px; /* 最大宽度，防止图片太大 */
@@ -50,10 +51,10 @@
         body {
             font-family: 'M PLUS Rounded 1c', sans-serif;
             margin: 0;
-            height: 100vh; /* 占满整个屏幕高度 */
+            height: 100vh;
             background: var(--bg-gradient);
             background-attachment: fixed;
-            display: flex; /* 使用 Flexbox 进行左右分栏 */
+            display: flex;
             transition: background 0.5s ease;
             animation: fadeIn 1s ease-in-out;
         }
@@ -71,7 +72,7 @@
         }
 
         .profile-section, .interactive-section {
-            flex: 1; /* 两栏平分宽度 */
+            flex: 1;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -181,12 +182,12 @@
                 height: auto;
             }
             .main-container {
-                flex-direction: column; /* 竖向排列 */
+                flex-direction: column;
             }
         }
     </style>
 </head>
-<body class="theme-pink"> <!-- 默认主题 -->
+<body class="theme-pink">
 
     <div class="main-container">
         
@@ -204,7 +205,10 @@
                 <!-- 3. 修改你的简介 -->
                 <p class="description">✨ 这里是我的奇趣空间，一个充满了奇思妙想和无限可能的地方！</p>
 
-                <!-- 你可以在这里加回之前的相册和视频 -->
+                <!-- 💡 你现在可以在这里添加新图片了！ -->
+                <!-- 例如: <img src="你的图片名.jpg" alt="照片" class="showcase-img"> -->
+
+            </div>
         </section>
 
         <!-- ======================= -->
@@ -262,7 +266,6 @@
         themeButtons.forEach(button => {
             button.addEventListener('click', () => {
                 const theme = button.getAttribute('data-theme');
-                // 移除所有可能的主题类，然后添加新的
                 body.className = ''; 
                 body.classList.add(`theme-${theme}`);
             });
