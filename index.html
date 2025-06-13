@@ -22,15 +22,6 @@
             --shadow-color: rgba(255, 121, 198, 0.3);
         }
         
-        /* 你为新图片添加的样式，非常棒！ */
-        .showcase-img {
-            width: 100%; /* 图片宽度占满卡片 */
-            max-width: 350px; /* 最大宽度，防止图片太大 */
-            border-radius: 20px; /* 给图片也加上圆角 */
-            margin-top: 25px; /* 和上面的简介拉开一点距离 */
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1); /* 加一点阴影，更有立体感 */
-        }
-        
         body.theme-mint {
             --bg-gradient: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%);
             --main-bg-color: rgba(255, 255, 255, 0.7);
@@ -57,6 +48,7 @@
             display: flex;
             transition: background 0.5s ease;
             animation: fadeIn 1s ease-in-out;
+            overflow: hidden; /* 防止滚动条出现 */
         }
 
         @keyframes fadeIn {
@@ -102,6 +94,7 @@
             margin-bottom: 20px;
             box-shadow: 0 0 0 8px var(--accent-color);
             transition: transform 0.3s ease;
+            cursor: pointer; /* 提示用户可以点击 */
         }
 
         .profile-pic:hover {
@@ -136,7 +129,7 @@
         }
 
         .button-group {
-            margin-bottom: 40px;
+            margin-bottom: 20px; /* 调整间距 */
         }
 
         .theme-btn, #surprise-btn {
@@ -174,12 +167,89 @@
             box-shadow: 0 4px 15px var(--shadow-color);
             font-weight: bold;
             transition: all 0.5s ease;
+            margin-top: 20px;
+        }
+        
+        /* 
+        ================================
+        ✨ 新增好玩元素的 CSS 样式 ✨
+        ================================
+        */
+
+        /* --- 1. 魔法光标样式 --- */
+        .sparkle {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.2s ease-out, opacity 0.2s ease-out;
+        }
+
+        /* --- 2. "宠物"头像点击动画 --- */
+        @keyframes wobble {
+            0% { transform: rotate(0deg); }
+            25% { transform: rotate(5deg) scale(1.1); }
+            50% { transform: rotate(-5deg) scale(1.1); }
+            75% { transform: rotate(5deg) scale(1.1); }
+            100% { transform: rotate(0deg); }
+        }
+
+        .profile-pic.clicked {
+            animation: wobble 0.5s ease-in-out;
+        }
+
+        /* --- 3. 小游戏样式 --- */
+        #game-container {
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 20px;
+            padding: 20px;
+            margin-top: 20px;
+            width: 80%;
+            max-width: 400px;
+            box-shadow: 0 4px 15px var(--shadow-color);
+            text-align: center;
+            color: var(--text-color);
+        }
+        #game-container h3 {
+            margin-top: 0;
+            color: var(--accent-color);
+        }
+        #guess-input {
+            width: 60%;
+            padding: 8px;
+            border: 2px solid var(--accent-color);
+            border-radius: 10px;
+            margin-right: 5px;
+        }
+        #guess-btn {
+            font-family: inherit;
+            font-size: 0.9em;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 15px;
+            cursor: pointer;
+            background: var(--button-bg);
+            color: var(--button-text);
+            transition: transform 0.2s ease;
+        }
+        #guess-btn:hover {
+            transform: scale(1.1);
+        }
+        #game-feedback {
+            font-weight: bold;
+            margin-top: 15px;
+            min-height: 20px;
         }
 
         /* 移动端适配 */
         @media (max-width: 800px) {
             body {
                 height: auto;
+                overflow: auto; /* 在移动端允许滚动 */
             }
             .main-container {
                 flex-direction: column;
@@ -204,10 +274,6 @@
                 
                 <!-- 3. 修改你的简介 -->
                 <p class="description">✨ 这里是我的奇趣空间，一个充满了奇思妙想和无限可能的地方！</p>
-
-                <!-- 💡 你现在可以在这里添加新图片了！ -->
-                <!-- 例如: <img src="你的图片名.jpg" alt="照片" class="showcase-img"> -->
-
             </div>
         </section>
 
@@ -225,6 +291,16 @@
             </div>
 
             <button id="surprise-btn">点我！有惊喜！</button>
+
+            <!-- ======================= -->
+            <!--   “猜猜数字”小游戏代码   -->
+            <!-- ======================= -->
+            <div id="game-container">
+                <h3>小游戏：猜猜数字 (1-100)</h3>
+                <input type="number" id="guess-input" placeholder="输入你的猜测">
+                <button id="guess-btn">猜！</button>
+                <p id="game-feedback">祝你好运！</p>
+            </div>
             
             <div id="message-box">
                 <p>今天会发生什么好事呢？</p>
@@ -241,16 +317,11 @@
         const surpriseBtn = document.getElementById('surprise-btn');
         const messageBox = document.getElementById('message-box');
 
-        // ✨ 在这里修改或增加你的俏皮文案！
         const messages = [
-            "你超棒的！要继续闪闪发光哦！✨",
-            "摸摸头，今天也要元气满满呀！",
-            "一个小知识：水豚可以和几乎所有动物做朋友。",
-            "你笑起来真好看，像春天的花一样。",
-            "快看！你的可爱值又增加了！",
-            "别忘了喝水，要做个水灵灵的宝贝。",
-            "悄悄告诉你，你正在被好运包围哦！",
-            "“砰！” ← 这是我心动的声音。",
+            "你超棒的！要继续闪闪发光哦！✨", "摸摸头，今天也要元气满满呀！",
+            "一个小知识：水豚可以和几乎所有动物做朋友。", "你笑起来真好看，像春天的花一样。",
+            "快看！你的可爱值又增加了！", "别忘了喝水，要做个水灵灵的宝贝。",
+            "悄悄告诉你，你正在被好运包围哦！", "“砰！” ← 这是我心动的声音。",
             "今日宜：拥抱自己，热爱生活。"
         ];
 
@@ -270,6 +341,77 @@
                 body.classList.add(`theme-${theme}`);
             });
         });
+
+        /* 
+        ================================
+        ✨ 新增好玩元素的 JS 逻辑 ✨
+        ================================
+        */
+
+        // --- 1. 仙女棒魔法光标 ---
+        document.addEventListener('mousemove', function(e) {
+            let sparkle = document.createElement('div');
+            sparkle.classList.add('sparkle');
+            document.body.appendChild(sparkle);
+
+            sparkle.style.left = e.clientX + 'px';
+            sparkle.style.top = e.clientY + 'px';
+            
+            let size = Math.random() * 8 + 2;
+            sparkle.style.width = size + 'px';
+            sparkle.style.height = size + 'px';
+
+            setTimeout(() => {
+                sparkle.style.transform = 'scale(0.5)';
+                sparkle.style.opacity = '0';
+            }, 100);
+
+            setTimeout(() => {
+                sparkle.remove();
+            }, 300);
+        });
+
+        // --- 2. "宠物"头像点击交互 ---
+        const profilePic = document.querySelector('.profile-pic');
+        profilePic.addEventListener('click', () => {
+            profilePic.classList.add('clicked');
+            setTimeout(() => {
+                profilePic.classList.remove('clicked');
+            }, 500);
+        });
+
+        // --- 3. “猜猜数字”小游戏逻辑 ---
+        const guessInput = document.getElementById('guess-input');
+        const guessBtn = document.getElementById('guess-btn');
+        const gameFeedback = document.getElementById('game-feedback');
+
+        let secretNumber = Math.floor(Math.random() * 100) + 1;
+        let attempts = 0;
+
+        guessBtn.addEventListener('click', () => {
+            const userGuess = parseInt(guessInput.value);
+            
+            if (isNaN(userGuess) || userGuess < 1 || userGuess > 100) {
+                gameFeedback.textContent = '请输入1到100之间的有效数字！';
+                return;
+            }
+            
+            attempts++;
+            
+            if (userGuess < secretNumber) {
+                gameFeedback.textContent = `太小了！再试试看。 (尝试次数: ${attempts})`;
+            } else if (userGuess > 1000) {
+                gameFeedback.textContent = `太大啦！再试试看。 (尝试次数: ${attempts})`;
+            } else {
+                gameFeedback.textContent = `🎉 恭喜你！猜对了！答案就是 ${secretNumber}！你一共用了 ${attempts} 次。`;
+                guessBtn.disabled = true;
+                guessInput.disabled = true;
+            }
+            
+            guessInput.value = '';
+            guessInput.focus();
+        });
+
     </script>
 
 </body>
