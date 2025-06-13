@@ -21,7 +21,15 @@
             --button-text: #fff;
             --shadow-color: rgba(255, 121, 198, 0.3);
         }
-
+        
+        .showcase-img {
+            width: 100%; /* 图片宽度占满卡片 */
+            max-width: 350px; /* 最大宽度，防止图片太大 */
+            border-radius: 20px; /* 给图片也加上圆角 */
+            margin-top: 25px; /* 和上面的简介拉开一点距离 */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); /* 加一点阴影，更有立体感 */
+        }
+        
         body.theme-mint {
             --bg-gradient: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%);
             --main-bg-color: rgba(255, 255, 255, 0.7);
@@ -29,7 +37,7 @@
             --button-bg: #66cdaa;
             --shadow-color: rgba(102, 205, 170, 0.4);
         }
-
+        
         body.theme-sunset {
             --bg-gradient: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
             --main-bg-color: rgba(255, 255, 255, 0.65);
