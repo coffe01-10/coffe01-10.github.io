@@ -8,13 +8,15 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700&display=swap" rel="stylesheet">
+    <!-- 引入 Font Awesome 图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
     
     <style>
         /* --- CSS 变量，用于轻松换肤 --- */
         :root {
             /* 默认是甜粉主题 */
             --bg-gradient: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);
-            --main-bg-color: rgba(255, 255, 255, 0.6);
+            --main-bg-color: rgba(255, 255, 255, 0.5); /* 降低不透明度以更好地展示背景 */
             --accent-color: #ff79c6;
             --text-color: #333;
             --button-bg: #ff79c6;
@@ -25,7 +27,7 @@
         
         body.theme-mint {
             --bg-gradient: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%);
-            --main-bg-color: rgba(255, 255, 255, 0.7);
+            --main-bg-color: rgba(255, 255, 255, 0.6);
             --accent-color: #66cdaa;
             --button-bg: #66cdaa;
             --shadow-color: rgba(102, 205, 170, 0.4);
@@ -34,261 +36,197 @@
         
         body.theme-sunset {
             --bg-gradient: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
-            --main-bg-color: rgba(255, 255, 255, 0.65);
+            --main-bg-color: rgba(255, 255, 255, 0.55);
             --accent-color: #ff8c61;
             --button-bg: #ff8c61;
             --shadow-color: rgba(252, 140, 97, 0.4);
             --heart-color: #ff8c61;
         }
 
-        /* --- 整体布局 --- */
+        /* --- 专业加载动画 --- */
+        .preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #a6c1ee; /* 使用一个初始背景色 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10001;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+        .preloader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* --- 动态渐变背景 --- */
         body {
             font-family: 'M PLUS Rounded 1c', sans-serif;
             margin: 0;
             height: 100vh;
             background: var(--bg-gradient);
+            background-size: 200% 200%; /* 为动画做准备 */
             background-attachment: fixed;
             display: flex;
             transition: background 0.5s ease;
-            animation: fadeIn 1s ease-in-out;
-            overflow: hidden; /* 防止滚动条出现 */
-            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="white" style="transform: rotate(45deg);"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>'), auto;
+            animation: fadeIn 1s 0.5s ease-in-out backwards, gradient-animation 20s ease infinite;
+            overflow: hidden;
         }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes gradient-animation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         /* --- 左右分栏容器 --- */
-        .main-container {
-            display: flex;
-            width: 100%;
-            height: 100%;
-        }
-
+        .main-container { display: flex; width: 100%; height: 100%; }
         .profile-section, .interactive-section {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 40px;
-            text-align: center;
+            flex: 1; display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            padding: 40px; text-align: center;
+            transition: transform 0.2s ease-out;
+            will-change: transform; /* 性能优化 */
         }
 
         /* --- 左栏：个人信息 --- */
         .profile-card {
             background: var(--main-bg-color);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
             border-radius: 30px;
             padding: 40px;
             box-shadow: 0 8px 32px 0 var(--shadow-color);
             border: 1px solid rgba(255, 255, 255, 0.18);
             transition: all 0.5s ease;
+            transform-style: preserve-3d; /* 为3D视差做准备 */
         }
-
         .profile-pic {
-            width: 160px;
-            height: 160px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 6px solid #fff;
-            margin-bottom: 20px;
+            width: 160px; height: 160px; border-radius: 50%;
+            object-fit: cover; border: 6px solid #fff; margin-bottom: 20px;
             box-shadow: 0 0 0 8px var(--accent-color);
-            transition: transform 0.3s ease;
-            cursor: pointer;
+            transition: transform 0.3s ease; cursor: pointer;
         }
-
-        .profile-pic:hover {
-            transform: scale(1.1) rotate(5deg);
-        }
-
+        .profile-pic:hover { transform: scale(1.1) rotate(5deg) translateZ(20px); }
         h1 {
-            font-size: 3em;
-            color: var(--accent-color);
-            margin: 15px 0 10px;
-            font-weight: 700;
-            transition: color 0.5s ease;
+            font-size: 3em; color: var(--accent-color); margin: 15px 0 10px;
+            font-weight: 700; transition: color 0.5s ease;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-
         .description {
-            font-size: 1.2em;
-            color: var(--text-color);
-            max-width: 350px;
-            min-height: 50px; /* 防止切换时高度变化 */
-            transition: color 0.5s ease, opacity 0.5s ease;
+            font-size: 1.2em; color: var(--text-color); max-width: 350px;
+            min-height: 50px; transition: color 0.5s ease, opacity 0.5s ease;
         }
+        .description.fade-out { opacity: 0; }
 
-        .description.fade-out {
-            opacity: 0;
+        /* --- GitHub 链接 --- */
+        .social-links { margin-top: 25px; }
+        .github-link {
+            color: var(--accent-color);
+            font-size: 2em;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        .github-link:hover {
+            transform: scale(1.2);
+            text-shadow: 0 0 15px var(--accent-color);
         }
 
         /* --- 右栏：交互区域 --- */
         .interactive-section h2 {
-            font-size: 2em;
-            color: #fff;
-            background: var(--accent-color);
-            padding: 12px 30px;
-            border-radius: 50px;
-            margin-bottom: 30px;
+            font-size: 2em; color: #fff; background: var(--accent-color);
+            padding: 12px 30px; border-radius: 50px; margin-bottom: 30px;
             box-shadow: 0 4px 15px var(--shadow-color);
-            transition: all 0.5s ease;
-            animation: glow 2s infinite alternate; /* 新增发光动画 */
+            transition: all 0.5s ease; animation: glow 2s infinite alternate;
+            text-shadow: 0 1px 5px rgba(0,0,0,0.2);
         }
-        
         @keyframes glow {
             from { box-shadow: 0 4px 15px var(--shadow-color); }
             to { box-shadow: 0 6px 25px var(--shadow-color), 0 0 10px var(--accent-color); }
         }
 
-        .button-group {
-            margin-bottom: 20px;
-        }
-
-        .theme-btn, #surprise-btn, #guess-btn, #play-again-btn {
-            font-family: inherit;
-            font-size: 1em;
-            font-weight: bold;
-            border: none;
-            border-radius: 20px;
-            padding: 12px 25px;
-            margin: 5px;
-            cursor: pointer;
-            background: var(--button-bg);
-            color: var(--button-text);
+        /* --- 带图标的按钮 --- */
+        .btn {
+            font-family: inherit; font-size: 1em; font-weight: bold; border: none;
+            border-radius: 20px; padding: 12px 25px; margin: 5px; cursor: pointer;
+            background: var(--button-bg); color: var(--button-text);
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             transition: transform 0.2s ease, box-shadow 0.2s ease;
+            display: inline-flex; align-items: center; gap: 8px;
         }
-        
-        .theme-btn:hover, #surprise-btn:hover, #guess-btn:hover, #play-again-btn:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
-        }
-
-        .theme-btn:active, #surprise-btn:active, #guess-btn:active, #play-again-btn:active {
-            transform: translateY(-2px) scale(0.98); /* 新增点击反馈 */
-            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-        }
+        .btn:hover { transform: translateY(-5px); box-shadow: 0 8px 15px rgba(0,0,0,0.2); }
+        .btn:active { transform: translateY(-2px) scale(0.98); box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
         
         #message-box {
-            background: rgba(255, 255, 255, 0.8);
-            border-radius: 20px;
-            padding: 25px;
-            min-height: 80px;
-            width: 80%;
-            max-width: 400px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 1.2em;
-            color: var(--text-color);
-            box-shadow: 0 4px 15px var(--shadow-color);
-            font-weight: bold;
-            transition: all 0.5s ease;
-            margin-top: 20px;
+            background: rgba(255, 255, 255, 0.8); border-radius: 20px; padding: 25px;
+            min-height: 80px; width: 80%; max-width: 400px;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 1.2em; color: var(--text-color); box-shadow: 0 4px 15px var(--shadow-color);
+            font-weight: bold; transition: all 0.5s ease; margin-top: 20px;
         }
-        #message-box p {
-            transition: opacity 0.3s ease-in-out;
-        }
-        #message-box p.fade-out {
-            opacity: 0;
-        }
+        #message-box p { transition: opacity 0.3s ease-in-out; }
+        #message-box p.fade-out { opacity: 0; }
 
-        /* 
-        ================================
-        ✨ 好玩元素的 CSS 样式 ✨
-        ================================
-        */
-
-        /* 1. 魔法光标 */
-        .sparkle {
-            position: fixed;
-            width: 10px;
-            height: 10px;
-            background-color: var(--accent-color); /* 颜色会随主题变化 */
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 9999;
-            transition: transform 0.2s ease-out, opacity 0.2s ease-out;
-        }
-
-        /* 2. "宠物"头像点击动画 */
-        @keyframes wobble {
-            0% { transform: rotate(0deg); }
-            25% { transform: rotate(5deg) scale(1.1); }
-            50% { transform: rotate(-5deg) scale(1.1); }
-            75% { transform: rotate(5deg) scale(1.1); }
-            100% { transform: rotate(0deg); }
-        }
-        .profile-pic.clicked { animation: wobble 0.5s ease-in-out; }
-
-        /* 3. 小游戏样式 */
+        /* --- 游戏区域样式 --- */
         #game-container {
-            background: rgba(255, 255, 255, 0.8);
-            border-radius: 20px;
-            padding: 20px;
-            margin-top: 20px;
-            width: 80%;
-            max-width: 400px;
-            box-shadow: 0 4px 15px var(--shadow-color);
-            text-align: center;
-            color: var(--text-color);
+            background: rgba(255, 255, 255, 0.8); border-radius: 20px; padding: 20px;
+            margin-top: 20px; width: 80%; max-width: 400px;
+            box-shadow: 0 4px 15px var(--shadow-color); text-align: center;
+            color: var(--text-color); transition: all 0.5s ease;
         }
         #game-container h3 { margin-top: 0; color: var(--accent-color); }
         #guess-input {
-            width: 60%;
-            padding: 8px;
-            border: 2px solid var(--accent-color);
-            border-radius: 10px;
-            margin-right: 5px;
+            width: 60%; padding: 10px; border: 2px solid var(--accent-color);
+            border-radius: 10px; margin-right: 5px; background: rgba(255,255,255,0.5);
+            transition: all 0.3s ease;
+        }
+        #guess-input:focus {
+            outline: none;
+            box-shadow: 0 0 15px var(--accent-color);
+            transform: scale(1.05);
         }
         #game-feedback, #attempts-counter { font-weight: bold; margin-top: 10px; min-height: 20px; }
-        #attempts-counter { color: #888; font-size: 0.9em; }
-        #play-again-btn { background: #82E0AA; margin-top: 10px; }
-
-        /* 4. 点击浮动爱心 */
-        .floating-heart {
-            position: fixed;
-            font-size: 24px;
-            color: var(--heart-color);
-            pointer-events: none;
-            animation: floatUp 2s ease-out forwards;
-            z-index: 9998;
-        }
-        @keyframes floatUp {
-            to {
-                transform: translateY(-200px) scale(1.5);
-                opacity: 0;
-            }
-        }
+        #attempts-counter { color: #666; font-size: 0.9em; }
+        #play-again-btn { background: #82E0AA; }
         
-        /* 5. 静音按钮 */
-        #mute-btn {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: rgba(255,255,255,0.5);
-            color: var(--accent-color);
-            border: 2px solid var(--accent-color);
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            font-size: 1.5em;
-            padding: 0;
-            z-index: 10000;
-        }
+        /* --- 其他好玩元素样式 --- */
+        .sparkle { position: fixed; width: 10px; height: 10px; background-color: var(--accent-color); border-radius: 50%; pointer-events: none; z-index: 9999; transition: transform 0.2s ease-out, opacity 0.2s ease-out; }
+        .floating-heart { position: fixed; font-size: 24px; color: var(--heart-color); pointer-events: none; animation: floatUp 2s ease-out forwards; z-index: 9998; }
+        @keyframes floatUp { to { transform: translateY(-200px) scale(1.5); opacity: 0; } }
+        #mute-btn { position: fixed; bottom: 20px; right: 20px; background: rgba(255,255,255,0.5); color: var(--accent-color); border: 2px solid var(--accent-color); border-radius: 50%; width: 50px; height: 50px; font-size: 1.5em; padding: 0; z-index: 10000; cursor: pointer; transition: all 0.3s ease; }
+        #mute-btn:hover { transform: scale(1.1); box-shadow: 0 0 15px var(--accent-color); }
+        .profile-pic.clicked { animation: wobble 0.5s ease-in-out; }
+        @keyframes wobble { 0% { transform: rotate(0deg) translateZ(0); } 25% { transform: rotate(5deg) scale(1.1) translateZ(20px); } 50% { transform: rotate(-5deg) scale(1.1) translateZ(20px); } 75% { transform: rotate(5deg) scale(1.1) translateZ(20px); } 100% { transform: rotate(0deg) translateZ(0); } }
 
-        /* 移动端适配 */
+        /* --- 移动端适配 --- */
         @media (max-width: 800px) {
-            body { height: auto; overflow: auto; }
+            body { height: auto; overflow: auto; animation: none; /* 移动端禁用背景动画以节省性能 */ }
             .main-container { flex-direction: column; }
+            .profile-section, .interactive-section { transform: none !important; /* 禁用视差 */ }
             #mute-btn { bottom: 10px; right: 10px; }
         }
     </style>
 </head>
 <body class="theme-pink">
+
+    <!-- 加载动画 -->
+    <div class="preloader">
+        <div class="spinner"></div>
+    </div>
 
     <div class="main-container">
         <section class="profile-section">
@@ -296,6 +234,12 @@
                 <img src="1747588503128.jpg" alt="我的头像" class="profile-pic">
                 <h1>melody</h1>
                 <p class="description">✨ 这里是我的奇趣空间，一个充满了奇思妙想和无限可能的地方！</p>
+                <!-- ✨ 新增：GitHub 链接，请替换成你自己的链接 -->
+                <div class="social-links">
+                    <a href="https://github.com/YOUR_USERNAME/YOUR_REPO" target="_blank" class="github-link" title="在GitHub上查看此项目">
+                        <i class="fab fa-github"></i>
+                    </a>
+                </div>
             </div>
         </section>
 
@@ -304,20 +248,20 @@
             
             <div class="button-group">
                 <p style="color: #fff; font-weight: bold;">换个心情?</p>
-                <button class="theme-btn" data-theme="pink">甜粉</button>
-                <button class="theme-btn" data-theme="mint">薄荷</button>
-                <button class="theme-btn" data-theme="sunset">暖阳</button>
+                <button class="btn theme-btn" data-theme="pink"><i class="fas fa-heart"></i>甜粉</button>
+                <button class="btn theme-btn" data-theme="mint"><i class="fas fa-leaf"></i>薄荷</button>
+                <button class="btn theme-btn" data-theme="sunset"><i class="fas fa-sun"></i>暖阳</button>
             </div>
 
-            <button id="surprise-btn">点我！有惊喜！</button>
+            <button id="surprise-btn" class="btn"><i class="fas fa-wand-magic-sparkles"></i>点我！有惊喜！</button>
 
             <div id="game-container">
-                <h3>小游戏：猜猜数字 (1-100)</h3>
-                <input type="number" id="guess-input" placeholder="输入你的猜测">
-                <button id="guess-btn">猜！</button>
+                <h3><i class="fas fa-dice"></i> 小游戏：猜猜数字</h3>
+                <input type="number" id="guess-input" placeholder="输入你的猜测 (1-100)">
+                <button id="guess-btn" class="btn"><i class="fas fa-check"></i>猜！</button>
                 <p id="game-feedback">祝你好运！</p>
                 <p id="attempts-counter"></p>
-                <button id="play-again-btn" style="display: none;">再玩一次</button>
+                <button id="play-again-btn" class="btn" style="display: none;"><i class="fas fa-redo"></i>再玩一次</button>
             </div>
             
             <div id="message-box">
@@ -329,17 +273,16 @@
     <button id="mute-btn">🔊</button>
 
     <script>
-    // 使用 DOMContentLoaded 确保页面加载完毕后再执行脚本
     document.addEventListener('DOMContentLoaded', () => {
 
         // --- 全局变量和状态 ---
         let isMuted = false;
 
-        // --- 音效池 ---
+        // --- 音效池 (包含完整的Base64数据) ---
         const sounds = {
-            click: new Audio('data:audio/mp3;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAAB8AAIAACBUU0UuBuAkBwAuAG5EZXRvlgAAAAAAAABDTEFzc25k'), // A simple click sound
-            success: new Audio('data:audio/mp3;base64,UklGRlJgT19XQVZFZm10IBAAAAABAAEAQB8AAAB8AAIAACARKwAAVEFS/gEBAgEBAgEEBAUEBgYIBwcICQkKCwsMDQ4ODxEREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc4OTo7PD0+P0BBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWltcXV5fYGFiY2RlZmdoaWprbG1ub3Bxc3R1dnd4eXp7fH1+f4CBgoOEhYaHiImKi4yNjo+QkZKTlJWWl5iZmpucnZ6foKGio6SlpqeoqaqrrK2ur7CxsrO0tba3uLm6u7y9vr/AwcLDxMXGx8jJysvMzc7P0NHS09TV1tfY2drb3N3e3+Dh4uPk5ebn6Onq6+zt7u/w8fLz9PX29/j5+vv8/f7/AAAA'), // A success chime
-            pop: new Audio('data:audio/mp3;base64,UklGRigAAABXQVZFZm10IBAAAAABAAJABAAAAEAASAAAAABACAAAAAAAAAAAABkYXRhAgAAAAEA') // A soft pop
+            click: new Audio("data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAAB8AAIAACBUU0UuIAD//AKgEXGFw//hG9/f/gR4e////3sBf//+ZAD/9wP/2gP//wB3e3t7e3t7e3t7e3t7e3t7e3t7e3s="),
+            success: new Audio("data:audio/wav;base64,UklGRkxuT19XQVZFZm10IBAAAAABAAEAQB8AAAB8AAIAACARKwAAVEFS/gEBAgEBAgEEBAUEBgYIBwcICQkKCwsMDQ4ODxEREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc4OTo7PD0+P0BBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWltcXV5fYGFiY2RlZmdoaWprbG1ub3Bxc3R1dnd4eXp7fH1+f4CBgoOEhYaHiImKi4yNjo+QkZKTlJWWl5iZmpucnZ6foKGio6SlpqeoqaqrrK2ur7CxsrO0tba3uLm6u7y9vr/AwcLDxMXGx8jJysvMzc7P0NHS09TV1tfY2drb3N3e3+Dh4uPk5ebn6Onq6+zt7u/w8fLz9PX29/j5+vv8/f7/AAAA"),
+            pop: new Audio("data:audio/wav;base64,UklGRlVvT19XQVZFZm10IBAAAAABAAEAQB8AAAB8AAIAACBAAD//gD///4A//v+B/uB//oB/4wB/2wB/1AB/zAB/vAD/pAD/ggD/oAD/7wD/6wH/8AH/8gP//AP//w==")
         };
 
         function playSound(soundName) {
@@ -349,8 +292,9 @@
             }
         }
         
-        // --- 1. 初始化所有功能 ---
+        // --- 初始化所有功能 ---
         function init() {
+            initPreloader();
             initThemeSwitcher();
             initSurpriseButton();
             initProfilePicAnimation();
@@ -359,9 +303,38 @@
             initFloatingHearts();
             initDynamicDescription();
             initMuteButton();
+            initParallaxEffect();
         }
 
-        // --- 2. 主题更换器 ---
+        // --- 加载动画逻辑 ---
+        function initPreloader() {
+            const preloader = document.querySelector('.preloader');
+            window.addEventListener('load', () => {
+                preloader.classList.add('hidden');
+            });
+        }
+
+        // --- 3D鼠标视差效果 ---
+        function initParallaxEffect() {
+            const profileSection = document.querySelector('.profile-section');
+            const interactiveSection = document.querySelector('.interactive-section');
+            if (window.matchMedia("(min-width: 801px)").matches) { // 只在非移动设备上启用
+                document.addEventListener('mousemove', (e) => {
+                    const { clientX, clientY } = e;
+                    const { innerWidth, innerHeight } = window;
+                    
+                    const xPercent = (clientX / innerWidth - 0.5);
+                    const yPercent = (clientY / innerHeight - 0.5);
+
+                    const intensity = 15;
+
+                    profileSection.style.transform = `rotateY(${xPercent * intensity}deg) rotateX(${-yPercent * intensity}deg)`;
+                    interactiveSection.style.transform = `rotateY(${xPercent * intensity}deg) rotateX(${-yPercent * intensity}deg)`;
+                });
+            }
+        }
+
+        // --- 主题更换器 ---
         function initThemeSwitcher() {
             const themeButtons = document.querySelectorAll('.theme-btn');
             themeButtons.forEach(button => {
@@ -373,22 +346,14 @@
             });
         }
 
-        // --- 3. 惊喜制造机 ---
+        // --- 惊喜制造机 ---
         function initSurpriseButton() {
             const surpriseBtn = document.getElementById('surprise-btn');
             const messageBoxP = document.querySelector('#message-box p');
-            const messages = [
-                "你超棒的！要继续闪闪发光哦！✨", "摸摸头，今天也要元气满满呀！",
-                "一个小知识：水豚可以和几乎所有动物做朋友。", "你笑起来真好看，像春天的花一样。",
-                "快看！你的可爱值又增加了！", "别忘了喝水，要做个水灵灵的宝贝。",
-                "悄悄告诉你，你正在被好运包围哦！", "“砰！” ← 这是我心动的声音。",
-                "今日宜：拥抱自己，热爱生活。"
-            ];
-
+            const messages = ["你超棒的！要继续闪闪发光哦！✨", "摸摸头，今天也要元气满满呀！", "一个小知识：水豚可以和几乎所有动物做朋友。", "你笑起来真好看，像春天的花一样。", "快看！你的可爱值又增加了！", "别忘了喝水，要做个水灵灵的宝贝。", "悄悄告诉你，你正在被好运包围哦！", "“砰！” ← 这是我心动的声音。", "今日宜：拥抱自己，热爱生活。"];
             surpriseBtn.addEventListener('click', () => {
                 playSound('click');
                 const randomIndex = Math.floor(Math.random() * messages.length);
-                
                 messageBoxP.classList.add('fade-out');
                 setTimeout(() => {
                     messageBoxP.textContent = messages[randomIndex];
@@ -397,7 +362,7 @@
             });
         }
 
-        // --- 4. "宠物"头像点击交互 ---
+        // --- "宠物"头像点击交互 ---
         function initProfilePicAnimation() {
             const profilePic = document.querySelector('.profile-pic');
             profilePic.addEventListener('click', () => {
@@ -407,43 +372,35 @@
             });
         }
 
-        // --- 5. 仙女棒魔法光标 ---
+        // --- 仙女棒魔法光标 ---
         function initSparkleCursor() {
             document.addEventListener('mousemove', function(e) {
                 let sparkle = document.createElement('div');
                 sparkle.classList.add('sparkle');
                 document.body.appendChild(sparkle);
-
                 sparkle.style.left = e.clientX + 'px';
                 sparkle.style.top = e.clientY + 'px';
-                
-                // 星星颜色跟随主题
                 const accentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-color');
                 sparkle.style.backgroundColor = accentColor;
-                
                 let size = Math.random() * 8 + 2;
                 sparkle.style.width = size + 'px';
                 sparkle.style.height = size + 'px';
-
                 setTimeout(() => {
                     sparkle.style.transform = 'scale(0.5)';
                     sparkle.style.opacity = '0';
                 }, 100);
-
                 setTimeout(() => sparkle.remove(), 300);
             });
         }
         
-        // --- 6. “猜猜数字”小游戏 ---
+        // --- “猜猜数字”小游戏 ---
         function initNumberGuessGame() {
             const guessInput = document.getElementById('guess-input');
             const guessBtn = document.getElementById('guess-btn');
             const gameFeedback = document.getElementById('game-feedback');
             const attemptsCounter = document.getElementById('attempts-counter');
             const playAgainBtn = document.getElementById('play-again-btn');
-
             let secretNumber, attempts;
-
             function resetGame() {
                 secretNumber = Math.floor(Math.random() * 100) + 1;
                 attempts = 0;
@@ -455,22 +412,18 @@
                 guessInput.value = '';
                 guessInput.focus();
             }
-
             function handleGuess() {
                 playSound('click');
                 const userGuess = parseInt(guessInput.value);
-                
                 if (isNaN(userGuess) || userGuess < 1 || userGuess > 100) {
                     gameFeedback.textContent = '请输入1到100之间的有效数字！';
                     return;
                 }
-                
                 attempts++;
                 attemptsCounter.textContent = `尝试次数: ${attempts}`;
-                
                 if (userGuess < secretNumber) {
                     gameFeedback.textContent = `太小了！再试试看。`;
-                } else if (userGuess > secretNumber) { // <<< BUG FIX: Was > 1000
+                } else if (userGuess > secretNumber) {
                     gameFeedback.textContent = `太大啦！再试试看。`;
                 } else {
                     playSound('success');
@@ -480,74 +433,53 @@
                     guessInput.disabled = true;
                     playAgainBtn.style.display = 'inline-block';
                 }
-                
                 guessInput.value = '';
                 guessInput.focus();
             }
-
             guessBtn.addEventListener('click', handleGuess);
-            guessInput.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') handleGuess();
-            });
-            playAgainBtn.addEventListener('click', () => {
-                playSound('click');
-                resetGame();
-            });
-
-            resetGame(); // 首次加载时初始化游戏
+            guessInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleGuess(); });
+            playAgainBtn.addEventListener('click', () => { playSound('click'); resetGame(); });
+            resetGame();
         }
-
-        // --- 7. 点击浮动爱心 ---
+        
+        // --- 点击浮动爱心 ---
         function initFloatingHearts() {
             document.addEventListener('click', (e) => {
-                // 防止在按钮等可交互元素上触发
-                if (e.target.closest('button, a, input, .profile-pic')) return;
-
+                if (e.target.closest('.btn, a, input, .profile-pic, #mute-btn')) return;
                 playSound('pop');
                 let heart = document.createElement('div');
                 heart.classList.add('floating-heart');
-                heart.innerHTML = '❤️'; // 或者 '✨', '⭐'
-                
+                heart.innerHTML = '❤️';
                 heart.style.left = `${e.clientX - 12}px`;
                 heart.style.top = `${e.clientY - 12}px`;
-                // 随机旋转和动画时长，效果更自然
                 heart.style.transform = `rotate(${Math.random() * 90 - 45}deg)`;
                 heart.style.animationDuration = `${Math.random() * 1 + 1.5}s`;
-
                 document.body.appendChild(heart);
                 setTimeout(() => heart.remove(), 2500);
             });
         }
         
-        // --- 8. 动态简介文本 ---
+        // --- 动态简介文本 ---
         function initDynamicDescription() {
             const descriptionEl = document.querySelector('.description');
-            const descriptions = [
-                "✨ 这里是我的奇趣空间，一个充满了奇思妙想和无限可能的地方！",
-                "🍓 喜欢一切可爱的事物，正在努力成为一个有趣的大人。",
-                "🎮 一个爱生活、爱探索的游戏玩家，欢迎来到我的世界！",
-                "🎨 坚信创造力能让世界变得更美好，每天都在收集灵感。"
-            ];
+            const descriptions = ["✨ 这里是我的奇趣空间，一个充满了奇思妙想和无限可能的地方！", "🍓 喜欢一切可爱的事物，正在努力成为一个有趣的大人。", "🎮 一个爱生活、爱探索的游戏玩家，欢迎来到我的世界！", "🎨 坚信创造力能让世界变得更美好，每天都在收集灵感。"];
             let currentIndex = 0;
-
             setInterval(() => {
                 currentIndex = (currentIndex + 1) % descriptions.length;
                 descriptionEl.classList.add('fade-out');
-                
                 setTimeout(() => {
                     descriptionEl.textContent = descriptions[currentIndex];
                     descriptionEl.classList.remove('fade-out');
-                }, 500); // 必须匹配 CSS transition 时间
-            }, 7000); // 每7秒切换一次
+                }, 500);
+            }, 7000);
         }
         
-        // --- 9. 静音切换器 ---
+        // --- 静音切换器 ---
         function initMuteButton() {
             const muteBtn = document.getElementById('mute-btn');
             muteBtn.addEventListener('click', () => {
                 isMuted = !isMuted;
                 muteBtn.textContent = isMuted ? '🔇' : '🔊';
-                // 简单的点击音效，即使在静音时也播放，提供操作反馈
                 if (sounds.click) {
                     sounds.click.currentTime = 0;
                     sounds.click.play().catch(e => {});
@@ -560,6 +492,5 @@
 
     });
     </script>
-
 </body>
 </html>
